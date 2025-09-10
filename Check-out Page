@@ -8,22 +8,27 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('hotel booking system(1).jpg') no-repeat center center fixed;
+            background-size: cover;
             padding: 40px;
+            color: white;
         }
 
         h1 {
             text-align: center;
-            color: #4facfe;
+            color: #ffffff;
         }
 
         .container {
-            background: white;
+            background: rgba(255, 255, 255, 0.9);
             max-width: 600px;
             margin: auto;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: black;
         }
 
         input {
@@ -68,7 +73,7 @@
     </div>
 
     <script>
-        const PRICE_PER_PERSON = 799;
+        const PRICE_PER_PERSON = 15999;
         const GST_PERCENT = 18;
 
         function checkOut() {
@@ -81,18 +86,27 @@
                 return;
             }
 
-            const gst = PRICE_PER_PERSON * (GST_PERCENT / 100);
-            const totalBill = PRICE_PER_PERSON + gst;
+            if (!customerData || customerData.name !== name || customerData.roomNumber != roomNumber) {
+                alert('No matching check-in record found.');
+                return;
+            }
+
+            const gstPerPerson = PRICE_PER_PERSON * (GST_PERCENT / 100);
+            const totalPerPerson = PRICE_PER_PERSON + gstPerPerson;
+            const totalBill = totalPerPerson * customerData.numPeople;
             const checkoutTime = new Date().toLocaleString();
 
             document.getElementById('checkoutResult').innerHTML = `
                 <h3>Check-Out Summary</h3>
-                <p><strong>Name:</strong> ${name}</p>
-                <p><strong>Room Number:</strong> ${roomNumber}</p>
+                <p><strong>Name:</strong> ${customerData.name}</p>
+                <p><strong>Room Number:</strong> ${customerData.roomNumber}</p>
+                <p><strong>Number of People:</strong> ${customerData.numPeople}</p>
+                <p><strong>Check-In Time:</strong> ${customerData.checkInTime}</p>
                 <p><strong>Check-Out Time:</strong> ${checkoutTime}</p>
-                <p><strong>Total Bill (1 night + GST):</strong> ₹${totalBill.toFixed(2)}</p>
+                <p><strong>Total Bill (₹15999 + 18% GST per person):</strong> ₹${totalBill.toFixed(2)}</p>
             `;
 
+            
             localStorage.removeItem('customerData');
         }
     </script>
