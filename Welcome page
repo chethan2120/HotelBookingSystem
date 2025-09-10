@@ -4,19 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome to Radisson</title>
+    <title>Radisson Hotel</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #4facfe, #00f2fe);
+            background: 
+                linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+                url('Hotel booking system.jpg') no-repeat center center fixed;
+            background-size: cover;
             color: white;
             text-align: center;
             padding: 100px;
         }
 
         h1 {
-            font-size: 48px;
-            margin-bottom: 40px;
+            font-size: 60px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        h2 {
+            font-size: 28px;
+            margin-bottom: 50px;
         }
 
         button {
@@ -27,7 +36,7 @@
             border-radius: 8px;
             cursor: pointer;
             background-color: #ffffff;
-            color: #4facfe;
+            color: rgba(117, 79, 254, 1);
             transition: background-color 0.3s;
         }
 
@@ -38,7 +47,8 @@
 </head>
 
 <body>
-    <h1>Welcome to Radisson Hotel</h1>
+    <h1>Radisson Hotel</h1>
+    <h2>Welcome to the Radisson Hotel</h2>
     <button onclick="location.href='checkin.html'">Check In</button>
     <button onclick="location.href='checkout.html'">Check Out</button>
 </body>
