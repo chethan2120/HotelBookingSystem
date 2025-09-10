@@ -1,0 +1,198 @@
+package hotelbookingsystem;
+
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+class Customer {
+    String name;
+    String contact;
+    int age;
+    String origin;
+    String gender;
+    String checkInDateTime;
+    String expectedCheckOutDateTime;
+    String roomType;
+    double billAmount;
+
+    Customer(String name, String contact, int age, String origin, String gender,
+             String checkInDateTime, String expectedCheckOutDateTime, String roomType, double billAmount) {
+        this.name = name;
+        this.contact = contact;
+        this.age = age;
+        this.origin = origin;
+        this.gender = gender;
+        this.checkInDateTime = checkInDateTime;
+        this.expectedCheckOutDateTime = expectedCheckOutDateTime;
+        this.roomType = roomType;
+        this.billAmount = billAmount;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public String getOrigin() {
+        return origin;
+    }
+
+    public String getRoomType() {
+        return roomType;
+    }
+}
+
+public class hotelbookingsystem {
+
+    static final int TOTAL_ROOMS = 10;
+    static Customer rooms[] = new Customer[TOTAL_ROOMS];
+    static final double PRICE_PER_NIGHT = 799;
+    static final double GST_PERCENT = 18;
+
+    public static void main(String[] args) {
+        try (Scanner hotel = new Scanner(System.in)) {
+            int choice;
+            
+            System.out.println("Welcome to Radisson Hotel Booking System");
+            
+            do {
+                System.out.println("\n1. Show Room Status");
+                System.out.println("2. Book Room");
+                System.out.println("3. Check Out Room");
+                System.out.println("4. Exit");
+                System.out.print("Enter your choice: ");
+                choice = hotel.nextInt();
+                hotel.nextLine();
+                
+                switch(choice) {
+                    case 1 -> showRoomStatus();
+                    case 2 -> bookRoom(hotel);
+                    case 3 -> checkOutRoom(hotel);
+                    case 4 -> System.out.println("Thank you for using Radisson Hotel Booking System!");
+                    default -> System.out.println("Invalid choice. Try again.");
+                }
+            } while(choice != 4);
+        }
+    }
+
+    public static void showRoomStatus() {
+        System.out.println("\n--- Room Status ---");
+        for (int i = 0; i < TOTAL_ROOMS; i++) {
+            String type = (i < 4) ? "Couple Room (Double Bed)" : "Single Room (Single Bed)";
+            if (rooms[i] == null) {
+                System.out.println("Room " + (i + 1) + ": Available (" + type + ")");
+            } else {
+                System.out.println("Room " + (i + 1) + ": Booked by " + rooms[i].name);
+            }
+        }
+    }
+
+    public static void bookRoom(Scanner hotel) {
+        System.out.print("Choose Room Number to Book (1-10): ");
+        int roomNo = hotel.nextInt();
+        hotel.nextLine();
+
+        if (roomNo < 1 || roomNo > TOTAL_ROOMS) {
+            System.out.println("Invalid room number.");
+            return;
+        }
+
+        if (rooms[roomNo - 1] != null) {
+            System.out.println("Room " + roomNo + " is already booked.");
+            return;
+        }
+
+        String roomType = (roomNo <= 4) ? "Couple Room (Double Bed)" : "Single Room (Single Bed)";
+
+        System.out.print("Enter Name (letters and spaces only): ");
+        String name = hotel.nextLine();
+        while(!name.matches("[a-zA-Z ]+")) {
+            System.out.print("Invalid name. Only letters allowed: ");
+            name = hotel.nextLine();
+        }
+
+        System.out.print("Enter Gender (Male/Female): ");
+        String gender = hotel.nextLine();
+        while(!gender.equalsIgnoreCase("Male") && !gender.equalsIgnoreCase("Female")) {
+            System.out.print("Invalid gender. Enter Male or Female: ");
+            gender = hotel.nextLine();
+        }
+
+        System.out.print("Enter 10-digit Contact Number: ");
+        String contact = hotel.nextLine();
+        while(!contact.matches("\\d{10}")) {
+            System.out.print("Invalid number. Exactly 10 digits: ");
+            contact = hotel.nextLine();
+        }
+
+        System.out.print("Enter Age: ");
+        int age = hotel.nextInt();
+        hotel.nextLine();
+        while(age <= 0 || age > 120) {
+            System.out.print("Invalid age. Enter correct age: ");
+            age = hotel.nextInt();
+            hotel.nextLine();
+        }
+
+        System.out.print("From where are you coming (Origin): ");
+        String origin = hotel.nextLine();
+
+        LocalDateTime nowIST = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+
+        String checkInDateTime = nowIST.format(dtf);
+        String expectedCheckOutDateTime = nowIST.plusHours(24).format(dtf);
+
+        double billAmount = PRICE_PER_NIGHT + (PRICE_PER_NIGHT * GST_PERCENT / 100);
+
+        Customer c = new Customer(name, contact, age, origin, gender,
+                                  checkInDateTime, expectedCheckOutDateTime, roomType, billAmount);
+        rooms[roomNo - 1] = c;
+
+        System.out.println("\n✅ Room " + roomNo + " booked successfully by " + name);
+        System.out.println("Room Type: " + roomType);
+        System.out.println("Bill Amount (1 night + 18% GST): Rs. " + billAmount);
+        System.out.println("Check-In Time (IST): " + checkInDateTime);
+        System.out.println("Expected Check-Out Time (IST): " + expectedCheckOutDateTime);
+    }
+
+    public static void checkOutRoom(Scanner hotel) {
+        System.out.print("Enter Room Number to Check Out (1 - 10): ");
+        int roomNo = hotel.nextInt();
+        hotel.nextLine();
+
+        if (roomNo < 1 || roomNo > TOTAL_ROOMS) {
+            System.out.println("Invalid room number.");
+            return;
+        }
+
+        if (rooms[roomNo - 1] == null) {
+            System.out.println("Room is not booked yet.");
+            return;
+        }
+
+        LocalDateTime nowIST = LocalDateTime.now(ZoneId.of("Asia/Kolkata"));
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
+        String actualCheckOutDateTime = nowIST.format(dtf);
+
+        System.out.println("\n✅ Room " + roomNo + " checked out successfully by " + rooms[roomNo - 1].name);
+        System.out.println("Check-In Time (IST): " + rooms[roomNo - 1].checkInDateTime);
+        System.out.println("Expected Check-Out Time (IST): " + rooms[roomNo - 1].expectedCheckOutDateTime);
+        System.out.println("Actual Check-Out Time (IST): " + actualCheckOutDateTime);
+        System.out.println("Total Bill: Rs. " + rooms[roomNo - 1].billAmount);
+
+        rooms[roomNo - 1] = null;
+    }
+}
